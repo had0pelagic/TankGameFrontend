@@ -12,9 +12,9 @@ const RenderedField = (fieldInfo, field) => {
 
   FillField(fieldInfo, field);
   AddTanks(fieldInfo, field);
-  AddObstacles(fieldInfo, field);
+  // AddObstacles(fieldInfo, field);
   return (
-    <StyledField column={fieldInfo.Height} row={fieldInfo.Width}>
+    <StyledField column={fieldInfo.height} row={fieldInfo.width}>
       {field.map((xItems) =>
         xItems.map((yItems, y) => <div key={y}>{yItems}</div>)
       )}
@@ -23,31 +23,31 @@ const RenderedField = (fieldInfo, field) => {
 };
 
 const AddObstacles = (fieldInfo, field) => {
-  if (fieldInfo.Obstacles.length === 0) return;
+  if (fieldInfo.obstacles.length === 0) return;
 
   fieldInfo.Obstacles.map((item) => {
-    field[item.XPosition][item.YPosition] = (
+    field[item.yPosition][item.xPosition] = (
       <StyledSquare color="black">#</StyledSquare>
     );
   });
 };
 
 const AddTanks = (fieldInfo, field) => {
-  if (fieldInfo.Tanks.length === 0) return;
+  if (fieldInfo.tanks.length === 0) return;
 
-  fieldInfo.Tanks.map((item) => {
-    field[item.XPosition][item.YPosition] = (
-      <StyledSquare color="red">{item.Name}</StyledSquare>
+  fieldInfo.tanks.map((item) => {
+    field[item.yPosition][item.xPosition] = (
+      <StyledSquare color="red">{item.name}</StyledSquare>
     );
   });
 };
 
 const FillField = (fieldInfo, field) => {
-  if (fieldInfo.Width === 0 || fieldInfo.Height === 0) return;
+  if (fieldInfo.width === 0 || fieldInfo.height === 0) return;
 
-  for (let x = 0; x < fieldInfo.Width; x++) {
+  for (let x = 0; x < fieldInfo.width; x++) {
     var column = [];
-    for (let y = 0; y < fieldInfo.Height; y++) {
+    for (let y = 0; y < fieldInfo.height; y++) {
       column.push(<StyledSquare />);
     }
     field.push(column);

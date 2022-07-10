@@ -19,3 +19,35 @@ code {
 .col {
   background-color: yellow;
 }
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 436px;
+  height: 200px;
+  background-color: black;
+  overflow: hidden;
+}
+
+.user-info {
+  display: flex;
+  font-size: large;
+}
+
+.controller-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.controller-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+  width: 50px;
+}
