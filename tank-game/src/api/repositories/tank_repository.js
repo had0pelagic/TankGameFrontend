@@ -1,4 +1,7 @@
 export default (axios) => ({
+  async createTank(data) {
+    return await axios.post("tank", data);
+  },
   async tankLeft(data) {
     return await axios.post("tank-left", data);
   },
