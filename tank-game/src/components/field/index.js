@@ -37,7 +37,9 @@ const AddTanks = (fieldInfo, field) => {
 
   fieldInfo.tanks.map((item) => {
     field[item.yPosition][item.xPosition] = (
-      <StyledSquare color="red">{item.name}</StyledSquare>
+      <StyledSquare color="red" rotation={item.rotation}>
+        {item.name[0] + "T^"}
+      </StyledSquare>
     );
   });
 };
@@ -63,6 +65,10 @@ const StyledSquare = styled.div`
   width: 100px;
   height: 100px;
   margin: 6px;
+  -webkit-transform: rotate(
+    ${(props) =>
+      props.rotation !== undefined ? props.rotation + "deg" : "0deg"}
+  );
 `;
 
 const StyledField = styled.div`

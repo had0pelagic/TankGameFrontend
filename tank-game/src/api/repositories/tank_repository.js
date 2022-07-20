@@ -14,4 +14,16 @@ export default (axios) => ({
   async tankDown(data) {
     return await axios.post("tank-down", data);
   },
+  async tankRotateLeft(data) {
+    return await axios.post("tank-rotate-left", data);
+  },
+  async tankRotateRight(data) {
+    return await axios.post("tank-rotate-right", data);
+  },
+  async tankDown(data) {
+    return await axios.post("tank-down", data);
+  },
+  async tankAttack(data) {
+    return await axios.post("tank-attack", data);
+  },
 });

@@ -6,6 +6,7 @@ import useSession from "./api/hooks/session";
 import { Randomizer } from "./util/randomizer";
 
 export default function App() {
+  const [userData, setUserData] = useState();
   const [saveUserData, removeUserData, getUserData] = useSession();
   const [started, setStarted] = useState(false);
 
@@ -16,6 +17,13 @@ export default function App() {
     } else {
       setInterval(() => {
         getField(setField);
+        var data = getUserData("user");
+        if (data === undefined) {
+          console.log("no user data lol");
+        } else {
+          console.log();
+          setUserData(data);
+        }
       }, 500);
     }
   }, [started]);
@@ -63,9 +71,15 @@ export default function App() {
       <div className="App-header">
         {fieldInfo ? (
           <>
+            {/* <div className="rot">^</div> */}
             <Field fieldInfo={fieldInfo} />
             <div className="user-panel">
-              <div className="user-info">Username</div>
+              {userData ? (
+                <div className="user-info">{userData.username}</div>
+              ) : (
+                <></>
+              )}
+
               <div className="controller-container">
                 <button
                   className="controller-button"
@@ -95,7 +109,7 @@ export default function App() {
               <button
                 onClick={() => createUser(user_model, setField, saveUserData)}
               >
-                create user1
+                ADD MY TANK
               </button>
               <button
                 className="controller-button"
@@ -103,7 +117,25 @@ export default function App() {
                   removeUser(setField, removeUserData, getUserData)
                 }
               >
-                removeUserData
+                REMOVE MY TANK
+              </button>
+              <button
+                className="controller-button"
+                onClick={() => tankAttack(setField, getUserData)}
+              >
+                ATTACK
+              </button>
+              <button
+                className="controller-button"
+                onClick={() => tankRotateLeft(setField, getUserData)}
+              >
+                ROTATE LEFT
+              </button>
+              <button
+                className="controller-button"
+                onClick={() => tankRotateRight(setField, getUserData)}
+              >
+                ROTATE RIGHT
               </button>
             </div>
           </>
@@ -128,7 +160,7 @@ async function getUser() {
   if (response.status === 200) {
     console.log(response);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -143,7 +175,7 @@ async function createUser(create_user_model, setField, saveUserData) {
     await createTank(setField, create_user_model);
     saveUserData("user", local_user_info);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -157,8 +189,9 @@ async function removeUser(setField, removeUserData, getUserData) {
   if (response.status === 200) {
     removeUserData("user");
     getField(setField);
+    window.location.reload();
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -168,7 +201,7 @@ async function getField(setField) {
   if (response.status === 200) {
     setField(response.response);
   } else {
-    alert(response.message);
+    console.log("nofield");
   }
 }
 
@@ -179,7 +212,7 @@ async function createTank(setField, data) {
   if (response.status === 200) {
     getField(setField);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -198,7 +231,7 @@ async function tankLeft(setField, getUserData) {
   if (response.status === 200) {
     getField(setField);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -217,7 +250,7 @@ async function tankRight(setField, getUserData) {
   if (response.status === 200) {
     getField(setField);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -236,7 +269,7 @@ async function tankUp(setField, getUserData) {
   if (response.status === 200) {
     getField(setField);
   } else {
-    alert(response.message);
+    console.log(response.message);
   }
 }
 
@@ -255,6 +288,63 @@ async function tankDown(setField, getUserData) {
   if (response.status === 200) {
     getField(setField);
   } else {
-    alert(response.message);
+    console.log(response.message);
+  }
+}
+
+async function tankRotateLeft(setField, getUserData) {
+  var data = getUserData("user");
+  var tank_movement_model = {
+    owner: {
+      username: data.username,
+    },
+    tank: {
+      name: data.tank_name,
+    },
+  };
+  var response = await Api.tank.tankRotateLeft(tank_movement_model);
+
+  if (response.status === 200) {
+    getField(setField);
+  } else {
+    console.log(response.message);
+  }
+}
+
+async function tankRotateRight(setField, getUserData) {
+  var data = getUserData("user");
+  var tank_movement_model = {
+    owner: {
+      username: data.username,
+    },
+    tank: {
+      name: data.tank_name,
+    },
+  };
+  var response = await Api.tank.tankRotateRight(tank_movement_model);
+
+  if (response.status === 200) {
+    getField(setField);
+  } else {
+    console.log(response.message);
+  }
+}
+
+async function tankAttack(setField, getUserData) {
+  var data = getUserData("user");
+  var tank_movement_model = {
+    owner: {
+      username: data.username,
+    },
+    tank: {
+      name: data.tank_name,
+    },
+  };
+  var response = await Api.tank.tankAttack(tank_movement_model);
+
+  if (response.status === 200) {
+    getField(setField);
+  } else {
+    console.log(response.message);
   }
 }

@@ -19,6 +19,7 @@ code {
 .col {
   background-color: yellow;
 }
+
 .user-panel {
   display: flex;
   flex-direction: column;
@@ -49,5 +50,5 @@ code {
   justify-content: center;
   align-items: center;
   margin: 1px;
-  width: 50px;
+  width: 50%;
 }
