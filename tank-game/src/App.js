@@ -6,9 +6,15 @@ import useSession from "./api/hooks/session";
 import { Randomizer } from "./util/randomizer";
 
 export default function App() {
+  const [userValid, setUserValid] = useState();
   const [userData, setUserData] = useState();
-  const [saveUserData, removeUserData, getUserData] = useSession();
   const [started, setStarted] = useState(false);
+  const [fieldInfo, setField] = useState();
+  const [saveUserData, removeUserData, getUserData] = useSession();
+  var user_model = {
+    name: Randomizer.randomizeUsername(),
+    password: Randomizer.randomizeUsername(),
+  };
 
   useEffect(() => {
     if (!started) {
@@ -18,132 +24,147 @@ export default function App() {
       setInterval(() => {
         getField(setField);
         var data = getUserData("user");
-        if (data === undefined) {
-          console.log("no user data lol");
-        } else {
-          console.log();
-          setUserData(data);
+        if (data !== null) {
+          isUserValid(
+            data.username,
+            setUserValid,
+            setUserData,
+            removeUserData,
+            getUserData
+          );
         }
       }, 500);
     }
   }, [started]);
 
-  // var fieldInfo = {
-  //   Width: 4,
-  //   Height: 4,
-  //   LeftBorder: 0,
-  //   RightBorder: 100,
-  //   TopBorder: 0,
-  //   BottomBorder: 100,
-  //   Tanks: [
-  //     {
-  //       Owner: { Username: "user1" },
-  //       Name: "tank1",
-  //       XPosition: 0,
-  //       YPosition: 1,
-  //     },
-  //     {
-  //       Owner: { Username: "user2" },
-  //       Name: "tank2",
-  //       XPosition: 2,
-  //       YPosition: 2,
-  //     },
-  //   ],
-  //   Obstacles: [
-  //     {
-  //       XPosition: 3,
-  //       YPosition: 3,
-  //     },
-  //     {
-  //       XPosition: 1,
-  //       YPosition: 2,
-  //     },
-  //   ],
-  // };
-  var user_model = {
-    name: Randomizer.randomizeUsername(),
-    password: Randomizer.randomizeUsername(),
+  const onKeyPress = (e) => {
+    console.log(e.keyCode);
+    if (fieldInfo && userValid) {
+      switch (e.keyCode) {
+        case 32: //space
+          tankAttack(setField, getUserData);
+          break;
+        case 37: //left arrow
+          tankLeft(setField, getUserData);
+          break;
+        case 39: //right arrow
+          tankRight(setField, getUserData);
+          break;
+        case 40: //down arrow
+          tankDown(setField, getUserData);
+          break;
+        case 38: //up arrow
+          tankUp(setField, getUserData);
+          break;
+        case 81: //q
+          tankRotateLeft(setField, getUserData);
+          break;
+        case 82: //r
+          tankRotateRight(setField, getUserData);
+          break;
+        default:
+      }
+    }
   };
-  const [fieldInfo, setField] = useState(null);
 
   return (
-    <div className="App">
+    <div className="App" tabIndex={0} onKeyDown={(e) => onKeyPress(e)}>
       <div className="App-header">
         {fieldInfo ? (
           <>
-            {/* <div className="rot">^</div> */}
             <Field fieldInfo={fieldInfo} />
             <div className="user-panel">
-              {userData ? (
-                <div className="user-info">{userData.username}</div>
+              {userValid ? (
+                <>
+                  <div className="user-info">{userData.username}</div>
+                  <div className="controller-container">
+                    <button
+                      className="controller-button"
+                      onClick={() => tankUp(setField, getUserData)}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      className="controller-button"
+                      onClick={() => tankDown(setField, getUserData)}
+                    >
+                      ↓
+                    </button>
+                    <button
+                      className="controller-button"
+                      onClick={() => tankLeft(setField, getUserData)}
+                    >
+                      ←
+                    </button>
+                    <button
+                      className="controller-button"
+                      onClick={() => tankRight(setField, getUserData)}
+                    >
+                      →
+                    </button>
+                    <button
+                      className="controller-button"
+                      onClick={() => tankRotateLeft(setField, getUserData)}
+                    >
+                      ↺
+                    </button>
+                    <button
+                      className="controller-button"
+                      onClick={() => tankRotateRight(setField, getUserData)}
+                    >
+                      ↻
+                    </button>
+                  </div>
+                  <p className="control-guide">
+                    arr_u arr_d arr_l arr_r q r space
+                  </p>
+                  <button
+                    className="action-button"
+                    onClick={() =>
+                      removeUser(setField, removeUserData, getUserData)
+                    }
+                  >
+                    REMOVE MY TANK
+                  </button>
+                  <button
+                    className="action-button"
+                    onClick={() => tankAttack(setField, getUserData)}
+                  >
+                    ATTACK
+                  </button>
+                </>
               ) : (
-                <></>
+                <>
+                  <button
+                    onClick={() =>
+                      createUser(
+                        user_model,
+                        setField,
+                        saveUserData,
+                        getUserData,
+                        setUserValid
+                      )
+                    }
+                  >
+                    ADD MY TANK
+                  </button>
+                </>
               )}
-
-              <div className="controller-container">
-                <button
-                  className="controller-button"
-                  onClick={() => tankUp(setField, getUserData)}
-                >
-                  ↑
-                </button>
-                <button
-                  className="controller-button"
-                  onClick={() => tankDown(setField, getUserData)}
-                >
-                  ↓
-                </button>
-                <button
-                  className="controller-button"
-                  onClick={() => tankLeft(setField, getUserData)}
-                >
-                  ←
-                </button>
-                <button
-                  className="controller-button"
-                  onClick={() => tankRight(setField, getUserData)}
-                >
-                  →
-                </button>
-              </div>
-              <button
-                onClick={() => createUser(user_model, setField, saveUserData)}
-              >
-                ADD MY TANK
-              </button>
-              <button
-                className="controller-button"
-                onClick={() =>
-                  removeUser(setField, removeUserData, getUserData)
-                }
-              >
-                REMOVE MY TANK
-              </button>
-              <button
-                className="controller-button"
-                onClick={() => tankAttack(setField, getUserData)}
-              >
-                ATTACK
-              </button>
-              <button
-                className="controller-button"
-                onClick={() => tankRotateLeft(setField, getUserData)}
-              >
-                ROTATE LEFT
-              </button>
-              <button
-                className="controller-button"
-                onClick={() => tankRotateRight(setField, getUserData)}
-              >
-                ROTATE RIGHT
-              </button>
             </div>
           </>
         ) : (
           <div style={{ color: "gray" }}>
             FIELD DOES NOT EXIST
             <button
-              onClick={() => createUser(user_model, setField, saveUserData)}
+              onClick={() =>
+                createUser(
+                  user_model,
+                  setField,
+                  saveUserData,
+                  getUserData,
+                  setUserValid
+                )
+              }
             >
               CREATE USER
             </button>
@@ -154,22 +175,48 @@ export default function App() {
   );
 }
 
-async function getUser() {
-  var response = await Api.user.getUser();
+async function isUserValid(
+  username,
+  setUserValid,
+  setUserData,
+  removeUserData,
+  getUserData
+) {
+  var model = {
+    username: username,
+  };
+  var response = await Api.user.isUserValid(model);
 
   if (response.status === 200) {
-    console.log(response);
+    setUserValid(response.response);
+    if (!response.response) {
+      await removeUserData("user");
+    } else {
+      var user_data = getUserData("user");
+      setUserData(user_data);
+    }
   } else {
     console.log(response.message);
   }
 }
 
-async function createUser(create_user_model, setField, saveUserData) {
+async function createUser(
+  create_user_model,
+  setField,
+  saveUserData,
+  getUserData,
+  setUserValid
+) {
   var response = await Api.user.createUser(create_user_model);
   var local_user_info = {
     username: create_user_model.name,
     tank_name: create_user_model.name + "_tank",
   };
+  var user_data = getUserData("user");
+
+  if (user_data !== null) {
+    await isUserValid(user_data.username, setUserValid);
+  }
 
   if (response.status === 200) {
     await createTank(setField, create_user_model);
@@ -188,7 +235,7 @@ async function removeUser(setField, removeUserData, getUserData) {
 
   if (response.status === 200) {
     removeUserData("user");
-    getField(setField);
+    await getField(setField);
     window.location.reload();
   } else {
     console.log(response.message);

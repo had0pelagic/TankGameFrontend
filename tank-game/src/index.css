@@ -39,7 +39,6 @@ code {
 .controller-container {
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 200px;
   height: 100px;
   overflow: hidden;
@@ -51,4 +50,19 @@ code {
   align-items: center;
   margin: 1px;
   width: 50%;
+  height: 60%;
+}
+
+.action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+  width: 50%;
+  height: 10%;
+}
+
+.control-guide {
+  font-size: 20px;
+  margin: 3px;
 }
