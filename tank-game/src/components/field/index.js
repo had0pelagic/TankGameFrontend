@@ -12,7 +12,8 @@ const RenderedField = (fieldInfo, field) => {
 
   FillField(fieldInfo, field);
   AddTanks(fieldInfo, field);
-  // AddObstacles(fieldInfo, field);
+  AddObstacles(fieldInfo, field);
+  
   return (
     <StyledField column={fieldInfo.height} row={fieldInfo.width}>
       {field.map((xItems) =>
@@ -25,7 +26,7 @@ const RenderedField = (fieldInfo, field) => {
 const AddObstacles = (fieldInfo, field) => {
   if (fieldInfo.obstacles.length === 0) return;
 
-  fieldInfo.Obstacles.map((item) => {
+  fieldInfo.obstacles.map((item) => {
     field[item.yPosition][item.xPosition] = (
       <StyledSquare color="black">#</StyledSquare>
     );

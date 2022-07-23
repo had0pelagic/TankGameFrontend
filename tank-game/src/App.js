@@ -37,38 +37,14 @@ export default function App() {
     }
   }, [started]);
 
-  const onKeyPress = (e) => {
-    console.log(e.keyCode);
-    if (fieldInfo && userValid) {
-      switch (e.keyCode) {
-        case 32: //space
-          tankAttack(setField, getUserData);
-          break;
-        case 37: //left arrow
-          tankLeft(setField, getUserData);
-          break;
-        case 39: //right arrow
-          tankRight(setField, getUserData);
-          break;
-        case 40: //down arrow
-          tankDown(setField, getUserData);
-          break;
-        case 38: //up arrow
-          tankUp(setField, getUserData);
-          break;
-        case 81: //q
-          tankRotateLeft(setField, getUserData);
-          break;
-        case 82: //r
-          tankRotateRight(setField, getUserData);
-          break;
-        default:
-      }
-    }
-  };
-
   return (
-    <div className="App" tabIndex={0} onKeyDown={(e) => onKeyPress(e)}>
+    <div
+      className="App"
+      tabIndex={0}
+      onKeyDown={(e) =>
+        onKeyPress(e, fieldInfo, userValid, setField, getUserData)
+      }
+    >
       <div className="App-header">
         {fieldInfo ? (
           <>
@@ -173,6 +149,35 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+function onKeyPress(e, fieldInfo, userValid, setField, getUserData) {
+  if (fieldInfo && userValid) {
+    switch (e.keyCode) {
+      case 32: //space
+        tankAttack(setField, getUserData);
+        break;
+      case 37: //left arrow
+        tankLeft(setField, getUserData);
+        break;
+      case 39: //right arrow
+        tankRight(setField, getUserData);
+        break;
+      case 40: //down arrow
+        tankDown(setField, getUserData);
+        break;
+      case 38: //up arrow
+        tankUp(setField, getUserData);
+        break;
+      case 81: //q
+        tankRotateLeft(setField, getUserData);
+        break;
+      case 82: //r
+        tankRotateRight(setField, getUserData);
+        break;
+      default:
+    }
+  }
 }
 
 async function isUserValid(
