@@ -1,12 +1,12 @@
 export default function useSession() {
-  function saveUserData(key, data) {
-    sessionStorage.setItem(key, JSON.stringify(data));
+  function saveUserData(data) {
+    sessionStorage.setItem("user", JSON.stringify(data));
   }
-  function removeUserData(key) {
-    sessionStorage.removeItem(key);
+  function removeUserData() {
+    sessionStorage.removeItem("user");
   }
-  function getUserData(key) {
-    return JSON.parse(sessionStorage.getItem(key));
+  function getUserData() {
+    return JSON.parse(sessionStorage.getItem("user"));
   }
 
   return [saveUserData, removeUserData, getUserData];

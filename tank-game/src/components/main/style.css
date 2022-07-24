@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.main {
+  justify-content: center;
+}
+
+.col {
+  background-color: yellow;
+}
+
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 436px;
+  height: 200px;
+  background-color: black;
+  overflow: hidden;
+}
+
+.user-info {
+  display: flex;
+  font-size: large;
+}
+
+.controller-container {
+  display: flex;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.controller-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+  width: 50%;
+  height: 60%;
+}
+
+.action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+  width: 50%;
+  height: 10%;
+}
+
+.control-guide {
+  font-size: 20px;
+  margin: 3px;
+}
+
+.field-start {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.field-start-paragraph {
+  font-size: 40px;
+  margin: 10px;
+}
+.field-start-tip {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.field-start-button {
+  font-size: 17px;
+  width: 50%;
+  height: 40px;
+  margin: 10px;
+}
