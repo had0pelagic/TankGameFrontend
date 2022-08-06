@@ -4,6 +4,7 @@ import Field from "../field/index";
 import Api from "../../api/index";
 import useSession from "../../api/hooks/session";
 import { Randomizer } from "../../util/randomizer";
+import Controller from "../controller";
 
 export default function Main() {
   const [userValid, setUserValid] = useState(null);
@@ -11,6 +12,7 @@ export default function Main() {
   const [started, setStarted] = useState(false);
   const [fieldInfo, setField] = useState(null);
   const [attackInfo, setAttackInfo] = useState(null);
+  const [keyDown, setKeyDown] = useState(null);
   const [saveUserData, removeUserData, getUserData] = useSession();
   var userModel = {
     name: Randomizer.randomizeUsername(),
@@ -18,7 +20,7 @@ export default function Main() {
   };
 
   useEffect(() => {
-    MainFlow(
+    mainFlow(
       started,
       setField,
       setStarted,
@@ -33,17 +35,8 @@ export default function Main() {
   return (
     <div
       className="App"
-      tabIndex={0}
-      onKeyDown={(e) =>
-        onKeyPress(
-          e,
-          fieldInfo,
-          userValid,
-          setField,
-          getUserData,
-          setAttackInfo
-        )
-      }
+      tabIndex={-1}
+      onKeyDown={(e) => onKeyPress(e, fieldInfo, userValid, setKeyDown)}
     >
       <div className="App-header">
         {fieldInfo ? (
@@ -53,12 +46,14 @@ export default function Main() {
               userValid={userValid}
               userData={userData}
               setField={setField}
-              getUserData={getUserData}
-              removeUserData={removeUserData}
+              getField={getField}
               setAttackInfo={setAttackInfo}
               userModel={userModel}
-              saveUserData={saveUserData}
               setUserValid={setUserValid}
+              removeUser={removeUser}
+              createUser={createUser}
+              setKeyDown={setKeyDown}
+              keyDown={keyDown}
             />
           </>
         ) : (
@@ -73,6 +68,35 @@ export default function Main() {
       </div>
     </div>
   );
+}
+
+async function onKeyPress(e, fieldInfo, userValid, setKeyDown) {
+  if (fieldInfo && userValid) {
+    switch (e.keyCode) {
+      case 32: //space
+        setKeyDown(32);
+        break;
+      case 37: //left arrow
+        setKeyDown(37);
+        break;
+      case 39: //right arrow
+        setKeyDown(39);
+        break;
+      case 40: //down arrow
+        setKeyDown(40);
+        break;
+      case 38: //up arrow
+        setKeyDown(38);
+        break;
+      case 81: //q
+        setKeyDown(81);
+        break;
+      case 82: //r
+        setKeyDown(82);
+        break;
+      default:
+    }
+  }
 }
 
 function FieldStart({
@@ -104,7 +128,7 @@ function FieldStart({
   );
 }
 
-function MainFlow(
+function mainFlow(
   started,
   setField,
   setStarted,
@@ -121,6 +145,7 @@ function MainFlow(
     setInterval(() => {
       getField(setField);
       var data = getUserData();
+
       if (data !== null) {
         isUserValid(
           data.username,
@@ -132,131 +157,6 @@ function MainFlow(
       }
       setAttackInfo(null);
     }, 500);
-  }
-}
-
-function Controller({
-  userValid,
-  userData,
-  setField,
-  getUserData,
-  removeUserData,
-  setAttackInfo,
-  userModel,
-  saveUserData,
-  setUserValid,
-}) {
-  return (
-    <div className="user-panel">
-      {userValid ? (
-        <>
-          <div className="user-info">{userData.username}</div>
-          <div className="controller-container">
-            <button
-              className="controller-button"
-              onClick={() => tankUp(setField, getUserData)}
-            >
-              ↑
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankDown(setField, getUserData)}
-            >
-              ↓
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankLeft(setField, getUserData)}
-            >
-              ←
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankRight(setField, getUserData)}
-            >
-              →
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankRotateLeft(setField, getUserData)}
-            >
-              ↺
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankRotateRight(setField, getUserData)}
-            >
-              ↻
-            </button>
-          </div>
-          <p className="control-guide">arr_u arr_d arr_l arr_r q r space</p>
-          <button
-            className="action-button"
-            onClick={() => removeUser(setField, removeUserData, getUserData)}
-          >
-            REMOVE MY TANK
-          </button>
-          <button
-            className="action-button"
-            onClick={() => tankAttack(setAttackInfo)}
-          >
-            ATTACK
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() =>
-              createUser(
-                userModel,
-                setField,
-                saveUserData,
-                getUserData,
-                setUserValid
-              )
-            }
-          >
-            ADD MY TANK
-          </button>
-        </>
-      )}
-    </div>
-  );
-}
-
-async function onKeyPress(
-  e,
-  fieldInfo,
-  userValid,
-  setField,
-  getUserData,
-  setAttackInfo
-) {
-  if (fieldInfo && userValid) {
-    switch (e.keyCode) {
-      case 32: //space
-        await tankAttack(setField, getUserData, setAttackInfo);
-        break;
-      case 37: //left arrow
-        await tankLeft(setField, getUserData);
-        break;
-      case 39: //right arrow
-        await tankRight(setField, getUserData);
-        break;
-      case 40: //down arrow
-        await tankDown(setField, getUserData);
-        break;
-      case 38: //up arrow
-        await tankUp(setField, getUserData);
-        break;
-      case 81: //q
-        await tankRotateLeft(setField, getUserData);
-        break;
-      case 82: //r
-        await tankRotateRight(setField, getUserData);
-        break;
-      default:
-    }
   }
 }
 
@@ -333,7 +233,7 @@ async function getField(setField) {
   if (response.status === 200) {
     setField(response.response);
   } else {
-    console.log("nofield");
+    console.log("no players");
   }
 }
 
@@ -342,145 +242,6 @@ async function createTank(setField, data) {
   var response = await Api.tank.createTank(model);
 
   if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankLeft(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankLeft(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRight(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRight(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankUp(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankUp(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankDown(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankDown(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRotateLeft(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRotateLeft(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRotateRight(setField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRotateRight(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankAttack(setField, getUserData, setAttackInfo) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankAttack(tankMovementModel);
-
-  if (response.status === 200) {
-    var attackModel = {
-      x: response.response.xPosition,
-      y: response.response.yPosition,
-      rotation: response.response.rotation,
-    };
-    setAttackInfo(attackModel);
     await getField(setField);
   } else {
     console.log(response.message);
