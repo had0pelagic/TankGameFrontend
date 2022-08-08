@@ -9,5 +9,5 @@ export default function useSession() {
     return JSON.parse(sessionStorage.getItem("user"));
   }
 
-  return [saveUserData, removeUserData, getUserData];
+  return {saveUserData, removeUserData, getUserData};
 }

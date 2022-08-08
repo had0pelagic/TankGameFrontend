@@ -73,7 +73,7 @@ const AddTanks = (fieldInfo, field) => {
   fieldInfo.tanks.map((item) => {
     field[item.yPosition][item.xPosition] = (
       <StyledSquare color="red" rotation={item.rotation}>
-        {item.name[0] + "T^"}
+        {item.name[0] + "^"}
       </StyledSquare>
     );
   });

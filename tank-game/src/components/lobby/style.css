@@ -1,0 +1,22 @@
+.field-start {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.field-start-paragraph {
+  font-size: 40px;
+  margin: 10px;
+}
+
+.field-start-tip {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.field-start-button {
+  font-size: 17px;
+  width: 50%;
+  height: 40px;
+  margin: 10px;
+}

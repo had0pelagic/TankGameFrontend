@@ -1,30 +1,32 @@
 import { useEffect } from "react";
-import Api from "../../api";
-import useSession from "../../api/hooks/session";
+import useApiMethods from "../../api/hooks/api_methods";
+import "./style.css";
 
 export default function Controller({
   userValid,
   userData,
   setField,
-  getField,
   setAttackInfo,
   userModel,
   setUserValid,
-  removeUser,
-  createUser,
   setKeyDown,
   keyDown,
 }) {
-  const [saveUserData, removeUserData, getUserData] = useSession();
+  const apiMethod = useApiMethods();
 
   useEffect(() => {
     onKeyPress(
       keyDown,
       setKeyDown,
       setField,
-      getField,
-      getUserData,
-      setAttackInfo
+      setAttackInfo,
+      apiMethod.tankAttack,
+      apiMethod.tankLeft,
+      apiMethod.tankRight,
+      apiMethod.tankDown,
+      apiMethod.tankUp,
+      apiMethod.tankRotateLeft,
+      apiMethod.tankRotateRight
     );
   }, [keyDown]);
 
@@ -33,60 +35,59 @@ export default function Controller({
       {userValid ? (
         <>
           <div className="user-info">{userData.username}</div>
+
           <div className="controller-container">
             <button
               className="controller-button"
-              onClick={() => tankUp(setField, getField, getUserData)}
-            >
-              ↑
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankDown(setField, getField, getUserData)}
-            >
-              ↓
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankLeft(setField, getField, getUserData)}
-            >
-              ←
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankRight(setField, getField, getUserData)}
-            >
-              →
-            </button>
-            <button
-              className="controller-button"
-              onClick={() => tankRotateLeft(setField, getField, getUserData)}
+              onClick={() => apiMethod.tankRotateLeft(setField)}
             >
               ↺
             </button>
             <button
               className="controller-button"
-              onClick={() => tankRotateRight(setField, getField, getUserData)}
+              onClick={() => apiMethod.tankUp(setField)}
+            >
+              ↑
+            </button>
+            <button
+              className="controller-button"
+              onClick={() => apiMethod.tankRotateRight(setField)}
             >
               ↻
             </button>
+            <button
+              className="controller-button"
+              onClick={() => apiMethod.tankLeft(setField)}
+            >
+              ←
+            </button>
+            <button
+              className="controller-button"
+              onClick={() => apiMethod.tankDown(setField)}
+            >
+              ↓
+            </button>
+
+            <button
+              className="controller-button"
+              onClick={() => apiMethod.tankRight(setField)}
+            >
+              →
+            </button>
           </div>
 
-          <p className="control-guide">arr_u arr_d arr_l arr_r q r space</p>
+          <button
+            className="action-button"
+            onClick={() => apiMethod.tankAttack(setField, setAttackInfo)}
+          >
+            ATTACK
+          </button>
 
           <button
             className="action-button"
-            onClick={() => removeUser(setField, removeUserData, getUserData)}
+            onClick={() => apiMethod.removeUser(setField)}
           >
             REMOVE MY TANK
-          </button>
-          <button
-            className="action-button"
-            onClick={() =>
-              tankAttack(setField, getField, getUserData, setAttackInfo)
-            }
-          >
-            ATTACK
           </button>
         </>
       ) : (
@@ -95,13 +96,7 @@ export default function Controller({
             style={{ margin: "20%" }}
             className="action-button"
             onClick={() =>
-              createUser(
-                userModel,
-                setField,
-                saveUserData,
-                getUserData,
-                setUserValid
-              )
+              apiMethod.createUser(userModel, setField, setUserValid)
             }
           >
             ADD TANK
@@ -116,178 +111,44 @@ async function onKeyPress(
   keyDown,
   setKeyDown,
   setField,
-  getField,
-  getUserData,
-  setAttackInfo
+  setAttackInfo,
+  tankAttack,
+  tankLeft,
+  tankRight,
+  tankDown,
+  tankUp,
+  tankRotateLeft,
+  tankRotateRight
 ) {
   switch (keyDown) {
     case 32: //space
       setKeyDown(null);
-      await tankAttack(setField, getField, getUserData, setAttackInfo);
+      await tankAttack(setField, setAttackInfo);
       break;
     case 37: //left arrow
       setKeyDown(null);
-      await tankLeft(setField, getField, getUserData);
+      await tankLeft(setField);
       break;
     case 39: //right arrow
       setKeyDown(null);
-      await tankRight(setField, getField, getUserData);
+      await tankRight(setField);
       break;
     case 40: //down arrow
       setKeyDown(null);
-      await tankDown(setField, getField, getUserData);
+      await tankDown(setField);
       break;
     case 38: //up arrow
       setKeyDown(null);
-      await tankUp(setField, getField, getUserData);
+      await tankUp(setField);
       break;
     case 81: //q
       setKeyDown(null);
-      await tankRotateLeft(setField, getField, getUserData);
+      await tankRotateLeft(setField);
       break;
     case 82: //r
       setKeyDown(null);
-      await tankRotateRight(setField, getField, getUserData);
+      await tankRotateRight(setField);
       break;
     default:
-  }
-}
-
-async function tankLeft(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankLeft(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRight(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRight(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankUp(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankUp(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankDown(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankDown(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRotateLeft(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRotateLeft(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankRotateRight(setField, getField, getUserData) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankRotateRight(tankMovementModel);
-
-  if (response.status === 200) {
-    await getField(setField);
-  } else {
-    console.log(response.message);
-  }
-}
-
-async function tankAttack(setField, getField, getUserData, setAttackInfo) {
-  var data = getUserData();
-  var tankMovementModel = {
-    owner: {
-      username: data.username,
-    },
-    tank: {
-      name: data.tankName,
-    },
-  };
-  var response = await Api.tank.tankAttack(tankMovementModel);
-
-  if (response.status === 200) {
-    var attackModel = {
-      x: response.response.xPosition,
-      y: response.response.yPosition,
-      rotation: response.response.rotation,
-    };
-    setAttackInfo(attackModel);
-    await getField(setField);
-  } else {
-    console.log(response.message);
   }
 }
