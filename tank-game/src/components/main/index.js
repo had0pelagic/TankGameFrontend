@@ -1,11 +1,12 @@
-import "./style.css";
 import { useEffect, useState } from "react";
-import Field from "../field/index";
-import useApiMethods from "../../api/hooks/api_methods";
-import useSession from "../../api/hooks/session";
-import { Randomizer } from "../../util/randomizer";
+import useSession from "../../hooks/session";
+import useField from "../../hooks/field";
+import useUser from "../../hooks/user";
+import Field from "../field";
 import Controller from "../controller";
 import Lobby from "../lobby";
+import { Randomizer } from "../../util/randomizer";
+import "./style.css";
 
 export default function Main() {
   const [userValid, setUserValid] = useState(null);
@@ -16,7 +17,8 @@ export default function Main() {
   const [keyDown, setKeyDown] = useState(null);
 
   const session = useSession();
-  const apiMethod = useApiMethods();
+  const fieldMethods = useField();
+  const userMethods = useUser();
 
   var userModel = {
     name: Randomizer.randomizeUsername(),
@@ -32,8 +34,8 @@ export default function Main() {
       setUserValid,
       setUserData,
       setAttackInfo,
-      apiMethod.getField,
-      apiMethod.isUserValid
+      fieldMethods.getField,
+      userMethods.isUserValid
     );
   }, [started]);
 

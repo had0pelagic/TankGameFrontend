@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import useApiMethods from "../../api/hooks/api_methods";
+import useTank from "../../hooks/tank";
+import useUser from "../../hooks/user";
 import "./style.css";
 
 export default function Controller({
@@ -12,7 +13,8 @@ export default function Controller({
   setKeyDown,
   keyDown,
 }) {
-  const apiMethod = useApiMethods();
+  const tankMethods = useTank();
+  const userMethods = useUser();
 
   useEffect(() => {
     onKeyPress(
@@ -20,13 +22,13 @@ export default function Controller({
       setKeyDown,
       setField,
       setAttackInfo,
-      apiMethod.tankAttack,
-      apiMethod.tankLeft,
-      apiMethod.tankRight,
-      apiMethod.tankDown,
-      apiMethod.tankUp,
-      apiMethod.tankRotateLeft,
-      apiMethod.tankRotateRight
+      tankMethods.tankAttack,
+      tankMethods.tankLeft,
+      tankMethods.tankRight,
+      tankMethods.tankDown,
+      tankMethods.tankUp,
+      tankMethods.tankRotateLeft,
+      tankMethods.tankRotateRight
     );
   }, [keyDown]);
 
@@ -39,38 +41,38 @@ export default function Controller({
           <div className="controller-container">
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankRotateLeft(setField)}
+              onClick={() => tankMethods.tankRotateLeft(setField)}
             >
               ↺
             </button>
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankUp(setField)}
+              onClick={() => tankMethods.tankUp(setField)}
             >
               ↑
             </button>
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankRotateRight(setField)}
+              onClick={() => tankMethods.tankRotateRight(setField)}
             >
               ↻
             </button>
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankLeft(setField)}
+              onClick={() => tankMethods.tankLeft(setField)}
             >
               ←
             </button>
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankDown(setField)}
+              onClick={() => tankMethods.tankDown(setField)}
             >
               ↓
             </button>
 
             <button
               className="controller-button"
-              onClick={() => apiMethod.tankRight(setField)}
+              onClick={() => tankMethods.tankRight(setField)}
             >
               →
             </button>
@@ -78,14 +80,14 @@ export default function Controller({
 
           <button
             className="action-button"
-            onClick={() => apiMethod.tankAttack(setField, setAttackInfo)}
+            onClick={() => tankMethods.tankAttack(setField, setAttackInfo)}
           >
             ATTACK
           </button>
 
           <button
             className="action-button"
-            onClick={() => apiMethod.removeUser(setField)}
+            onClick={() => userMethods.removeUser(setField)}
           >
             REMOVE MY TANK
           </button>
@@ -96,7 +98,7 @@ export default function Controller({
             style={{ margin: "20%" }}
             className="action-button"
             onClick={() =>
-              apiMethod.createUser(userModel, setField, setUserValid)
+              userMethods.createUser(userModel, setField, setUserValid)
             }
           >
             ADD TANK
